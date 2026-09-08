@@ -32,7 +32,9 @@ fi
 set -a; . ./.env; set +a
 for host in pypi.org huggingface.co; do curl -fsSI --max-time 10 "https://$host" >/dev/null || { echo "Недоступен $host"; exit 1; }; done
 docker compose build
-docker compose run --rm -e HF_HUB_OFFLINE=0 worker python -c 'import soundfile as sf; from chatterbox.mtl_tts import ChatterboxMultilingualTTS as M; m=M.from_pretrained(device="cpu"); w=m.generate("Проверка локального синтеза на процессоре.",language_id="ru"); sf.write("/data/install-smoke.wav",w.squeeze().detach().cpu().numpy(),m.sr); print("Настоящий smoke WAV создан")'
+docker compose run --rm -e HF_HUB_OFFLINE=0 worker python -m app.smoke
+# All runtime containers must use only the cache populated by the command above.
+sed -i 's/^HF_HUB_OFFLINE=.*/HF_HUB_OFFLINE=1/' .env
 docker compose up -d
 for i in {1..30}; do curl -fkSs "https://${STUDIO_HOST}:${HTTPS_PORT}/api/health" >/dev/null && break; sleep 2; done
 curl -fkSs "https://${STUDIO_HOST}:${HTTPS_PORT}/api/health" >/dev/null || { docker compose logs --tail=100; exit 1; }
