@@ -1,0 +1,5 @@
+{
+  "fairy": {"title":"Сказка","pause_ms":420,"model":{"exaggeration":0.62,"cfg_weight":0.48}},
+  "poem": {"title":"Стихотворение","pause_ms":560,"model":{"exaggeration":0.52,"cfg_weight":0.55}},
+  "lullaby": {"title":"Колыбельная","pause_ms":650,"model":{"exaggeration":0.30,"cfg_weight":0.65}}
+}
